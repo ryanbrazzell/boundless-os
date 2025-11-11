@@ -9,7 +9,7 @@ set -e  # Exit on error
 
 # Get the directory where this script is located
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-BASE_DIR="$HOME/boundless-os"
+BASE_DIR="$(dirname "$SCRIPT_DIR")"
 PROJECT_DIR="$(pwd)"
 
 # Source common functions
@@ -208,7 +208,7 @@ install_claude_code_commands_with_delegation() {
     fi
 
     local commands_count=0
-    local target_dir="$PROJECT_DIR/.claude/commands/boundless-os"
+    local target_dir="$PROJECT_DIR/.claude/commands"
 
     mkdir -p "$target_dir"
 
@@ -253,7 +253,7 @@ install_claude_code_commands_without_delegation() {
             if [[ -f "$source" ]]; then
                 # Handle orchestrate-tasks specially (flat destination)
                 if [[ "$file" == commands/orchestrate-tasks/orchestrate-tasks.md ]]; then
-                    local dest="$PROJECT_DIR/.claude/commands/boundless-os/orchestrate-tasks.md"
+                    local dest="$PROJECT_DIR/.claude/commands/orchestrate-tasks.md"
                     # Compile without PHASE embedding for orchestrate-tasks
                     local compiled=$(compile_command "$source" "$dest" "$BASE_DIR" "$EFFECTIVE_PROFILE" "")
                     if [[ "$DRY_RUN" == "true" ]]; then
@@ -266,7 +266,7 @@ install_claude_code_commands_without_delegation() {
                     if [[ ! "$filename" =~ ^[0-9]+-.*\.md$ ]]; then
                         # Extract command name (e.g., commands/plan-product/single-agent/plan-product.md -> plan-product.md)
                         local cmd_name=$(echo "$file" | sed 's|commands/\([^/]*\)/single-agent/.*|\1|')
-                        local dest="$PROJECT_DIR/.claude/commands/boundless-os/$cmd_name.md"
+                        local dest="$PROJECT_DIR/.claude/commands/$cmd_name.md"
 
                         # Compile with PHASE embedding (mode="embed")
                         local compiled=$(compile_command "$source" "$dest" "$BASE_DIR" "$EFFECTIVE_PROFILE" "embed")
@@ -294,8 +294,8 @@ install_claude_code_agents() {
     fi
 
     local agents_count=0
-    local target_dir="$PROJECT_DIR/.claude/agents/boundless-os"
-    
+    local target_dir="$PROJECT_DIR/.claude/agents"
+
     mkdir -p "$target_dir"
 
     while read file; do
@@ -596,10 +596,10 @@ perform_installation() {
 
         # Show what was installed
         if [[ "$EFFECTIVE_CLAUDE_CODE_COMMANDS" == "true" ]]; then
-            echo -e "  ${GREEN}✓${NC} Commands: ${BOLD}.claude/commands/boundless-os/${NC}"
+            echo -e "  ${GREEN}✓${NC} Commands: ${BOLD}.claude/commands/${NC}"
             if [[ "$EFFECTIVE_USE_CLAUDE_CODE_SUBAGENTS" == "true" ]]; then
                 echo -e "    ${CYAN}Multi-agent mode (commands delegate to specialized agents)${NC}"
-                echo -e "  ${GREEN}✓${NC} Agents: ${BOLD}.claude/agents/boundless-os/${NC}"
+                echo -e "  ${GREEN}✓${NC} Agents: ${BOLD}.claude/agents/${NC}"
                 echo -e "    ${CYAN}8 specialized agents for structured workflows${NC}"
             else
                 echo -e "    ${CYAN}Single-agent mode (all work done by main agent)${NC}"

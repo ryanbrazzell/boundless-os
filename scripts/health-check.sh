@@ -225,38 +225,48 @@ echo -e "${BOLD}${CYAN}Checking Claude Code Integration...${NC}"
 echo ""
 
 if [ "$CLAUDE_CODE_COMMANDS" == "true" ]; then
-    if [ -d "$PROJECT_DIR/.claude/commands/boundless-os" ]; then
+    # Check for key Boundless OS commands in flat structure
+    if [ -f "$PROJECT_DIR/.claude/commands/plan-product.md" ]; then
         pass_check "Claude Code commands installed"
 
-        # Count commands
-        COMMANDS_COUNT=$(find "$PROJECT_DIR/.claude/commands/boundless-os" -name "*.md" -type f | wc -l | tr -d ' ')
-        if [ "$COMMANDS_COUNT" -gt 0 ]; then
-            pass_check "Found $COMMANDS_COUNT command(s)"
-
-            # Check for key commands
-            if [ -f "$PROJECT_DIR/.claude/commands/boundless-os/plan-product.md" ]; then
-                pass_check "Core commands present (plan-product, etc.)"
+        # Count commands (excluding non-Boundless OS commands)
+        COMMANDS_COUNT=0
+        for cmd in plan-product shape-spec write-spec create-tasks implement-tasks orchestrate-tasks; do
+            if [ -f "$PROJECT_DIR/.claude/commands/$cmd.md" ]; then
+                ((COMMANDS_COUNT++))
             fi
+        done
+
+        if [ "$COMMANDS_COUNT" -gt 0 ]; then
+            pass_check "Found $COMMANDS_COUNT Boundless OS command(s)"
+            pass_check "Core commands present (plan-product, etc.)"
         else
-            fail_check "No command files found"
+            fail_check "No Boundless OS command files found"
         fi
     else
-        fail_check "Claude Code commands directory not found"
+        fail_check "Claude Code commands not found"
     fi
 
     if [ "$USE_SUBAGENTS" == "true" ]; then
-        if [ -d "$PROJECT_DIR/.claude/agents/boundless-os" ]; then
+        # Check for key Boundless OS agents in flat structure
+        if [ -f "$PROJECT_DIR/.claude/agents/product-planner.md" ]; then
             pass_check "Claude Code agents installed"
 
-            # Count agents
-            AGENTS_COUNT=$(find "$PROJECT_DIR/.claude/agents/boundless-os" -name "*.md" -type f | wc -l | tr -d ' ')
+            # Count Boundless OS agents
+            AGENTS_COUNT=0
+            for agent in product-planner spec-initializer spec-shaper spec-writer spec-verifier tasks-list-creator implementer implementation-verifier; do
+                if [ -f "$PROJECT_DIR/.claude/agents/$agent.md" ]; then
+                    ((AGENTS_COUNT++))
+                fi
+            done
+
             if [ "$AGENTS_COUNT" -gt 0 ]; then
-                pass_check "Found $AGENTS_COUNT agent(s)"
+                pass_check "Found $AGENTS_COUNT Boundless OS agent(s)"
             else
-                fail_check "No agent files found"
+                fail_check "No Boundless OS agent files found"
             fi
         else
-            fail_check "Claude Code agents directory not found"
+            fail_check "Claude Code agents not found"
         fi
     else
         pass_check "Single-agent mode (subagents not enabled)"

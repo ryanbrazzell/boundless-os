@@ -1,0 +1,13 @@
+name = "boundless-os-worker"
+main = "src/index.ts"
+account_id = "63119c873393458ef6da4a6a72889a28"
+compatibility_date = "2024-11-27"
+
+[vars]
+BETTER_AUTH_URL = "https://boundless-os-worker.boundless-os-app.workers.dev"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "422cfb99856a4747bd04ee03a2eb72f7"
+preview_id = "9319825c06594b4e966a0dc752ddf748"
+

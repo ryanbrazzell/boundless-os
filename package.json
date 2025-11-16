@@ -1,0 +1,32 @@
+{
+  "name": "boundless-os-churn-detection",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:web\" \"npm run dev:worker\"",
+    "dev:web": "cd web && npm run dev",
+    "dev:worker": "cd worker && npm run dev",
+    "build": "npm run build:web && npm run build:worker",
+    "build:web": "cd web && npm run build",
+    "build:worker": "cd worker && npm run build",
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "cd worker && npm run test",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:db": "cd worker && npm run test",
+    "db:generate": "cd worker && npm run db:generate",
+    "db:migrate": "cd worker && npm run db:migrate",
+    "db:push": "cd worker && npm run db:push",
+    "db:studio": "cd worker && npm run db:studio"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "concurrently": "^8.2.2",
+    "playwright": "^1.56.1"
+  },
+  "workspaces": [
+    "web",
+    "worker"
+  ]
+}

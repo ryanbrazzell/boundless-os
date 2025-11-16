@@ -1,0 +1,5 @@
+# Cloudflare Pages proxy configuration
+# Route all API requests to the Cloudflare Worker
+# This eliminates cross-origin requests and removes the need for CORS on authenticated requests
+
+/api/* https://boundless-os-worker.boundless-os-app.workers.dev/api/:splat 200
